@@ -3,30 +3,45 @@ import classes from "./ProductItem.module.css";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux/es/hooks/useSelector";
 import { cartActions } from "../store/cart";
+import { current } from "@reduxjs/toolkit";
+import { useEffect } from "react";
 
 const ProductItem = () => {
   const dispatch = useDispatch();
 
   const cartItems = useSelector((state) => state.cartState.items);
 
-  const addItemToCartHandler = () => {
-    dispatch(cartActions.addToCart());
+  
+  const addItemToCartHandler = (itemId) => {
+    console.log(itemId);
+    dispatch(cartActions.addToCart(itemId));
   };
+  console.log(cartItems);
 
-  return (
-    <li className={classes.item}>
-      <Card>
-        <header>
-          <h3>{cartItems.name}</h3>
-          <div className={classes.price}>${cartItems.price.toFixed(2)}</div>
-        </header>
-        <p>{cartItems.description}</p>
-        <div className={classes.actions}>
-          <button onClick={addItemToCartHandler}>Add to Cart</button>
-        </div>
-      </Card>
-    </li>
-  );
+  const mapedMeals = cartItems?.map((cartItem) => {
+    return (
+      <li className={classes.item}>
+        <Card>
+          <header>
+            <h3>{cartItem.name}</h3>
+            <div className={classes.price}>${cartItem.price}</div>
+          </header>
+          <p>{cartItem.description}</p>
+          <div className={classes.actions}>
+            <button
+              onClick={() => {
+                addItemToCartHandler(cartItem.id);
+              }}
+            >
+              Add to Cart
+            </button>
+          </div>
+        </Card>
+      </li>
+    );
+  });
+
+  return <ul className={classes.item}>{mapedMeals}</ul>;
 };
 
 export default ProductItem;

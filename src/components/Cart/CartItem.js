@@ -4,46 +4,61 @@ import { useDispatch } from "react-redux";
 import { cartActions } from "../store/cart";
 
 const CartItem = (props) => {
- 
-
   const dispatch = useDispatch();
 
   const cartItems = useSelector((state) => state.cartState.items);
   const cartContents = useSelector((state) => state.cartState.cartContents);
-  const currentPriceByAmount = cartContents.amount * cartItems.price;
+
   console.log(cartItems);
   console.log(cartContents);
+  const blaBla = 15;
 
-  const addItemToCartHandler = () => {
-    dispatch(cartActions.addToCart());
+  const addItemToCartHandler = (item) => {
+    dispatch(cartActions.addToCart(item));
   };
 
-  const removeItemToCartHandler = () => {
-    dispatch(cartActions.removeFromCart());
+  const removeItemToCartHandler = (item) => {
+    dispatch(cartActions.removeFromCart(item));
   };
 
-  return (
-    <li className={classes.item}>
-      <header>
-        <h3>{cartItems.name}</h3>
-        <div className={classes.price}>
-          ${currentPriceByAmount.toFixed(2)}{" "}
-          <span className={classes.itemprice}>
-            (${cartItems.price.toFixed(2)}/item)
-          </span>
+  // const currentPriceByAmount = cartContents.amount * cartContents.price;
+
+  const mappedCartItems = cartContents?.map((cartItem) => {
+    return (
+      <li className={classes.item}>
+        <header>
+          <h3>{cartItem.name}</h3>
+          <div className={classes.price}>
+            ${cartItem.price * cartItem.amount}
+            <span className={classes.itemprice}>(${cartItem.price}/item)</span>
+          </div>
+        </header>
+        <div className={classes.details}>
+          <div className={classes.quantity}>
+            x <span>{cartItem.amount}</span>
+          </div>
+          <div className={classes.actions}>
+            <button
+              onClick={() => {
+                removeItemToCartHandler(cartItem.id);
+              }}
+            >
+              -
+            </button>
+            <button
+              onClick={() => {
+                addItemToCartHandler(cartItem.id);
+              }}
+            >
+              +
+            </button>
+          </div>
         </div>
-      </header>
-      <div className={classes.details}>
-        <div className={classes.quantity}>
-          x <span>{cartContents.amount}</span>
-        </div>
-        <div className={classes.actions}>
-          <button onClick={removeItemToCartHandler}>-</button>
-          <button onClick={addItemToCartHandler}>+</button>
-        </div>
-      </div>
-    </li>
-  );
+      </li>
+    );
+  });
+
+  return <ul>{mappedCartItems}</ul>;
 };
 
 export default CartItem;
